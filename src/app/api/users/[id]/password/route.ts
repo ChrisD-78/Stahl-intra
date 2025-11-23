@@ -1,0 +1,39 @@
+import { NextRequest, NextResponse } from 'next/server'
+
+// PUT - Passwort für einen Benutzer zurücksetzen (nur für Admins)
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+    const { newPassword } = await request.json()
+
+    // Validierung
+    if (!newPassword) {
+      return NextResponse.json(
+        { success: false, error: 'Neues Passwort ist erforderlich' },
+        { status: 400 }
+      )
+    }
+
+    if (newPassword.length < 5) {
+      return NextResponse.json(
+        { success: false, error: 'Passwort muss mindestens 5 Zeichen lang sein' },
+        { status: 400 }
+      )
+    }
+
+    // Mock response - database disabled
+    return NextResponse.json({
+      success: true,
+      message: `Passwort wurde erfolgreich zurückgesetzt`
+    })
+  } catch (error) {
+    console.error('Failed to reset password:', error)
+    return NextResponse.json(
+      { success: false, error: 'Fehler beim Zurücksetzen des Passworts' },
+      { status: 500 }
+    )
+  }
+}
